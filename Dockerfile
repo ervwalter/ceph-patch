@@ -1,6 +1,6 @@
-FROM quay.io/ceph/ceph:v18.2.1
+FROM quay.io/ceph/ceph:v18.2.2
 
-LABEL org.opencontainers.image.source https://github.com/nanderson94/ceph-patch
+LABEL org.opencontainers.image.source https://github.com/ervwalter/ceph-patch
 
 COPY src/ceph-volume/ceph_volume/util/disk.py /usr/lib/python3.6/site-packages/ceph_volume/util/disk.py
 COPY src/ceph-volume/ceph_volume/util/device.py /usr/lib/python3.6/site-packages/ceph_volume/util/device.py

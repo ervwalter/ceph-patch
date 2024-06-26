@@ -1,0 +1,39 @@
+diff --git a/src/ceph-volume/ceph_volume/util/device.py b/src/ceph-volume/ceph_volume/util/device.py
+index d61222afe0a0b..bb806292f2c48 100644
+--- a/src/ceph-volume/ceph_volume/util/device.py
++++ b/src/ceph-volume/ceph_volume/util/device.py
+@@ -594,8 +594,8 @@ def has_partitions(self):
+ 
+     def _check_generic_reject_reasons(self):
+         reasons = [
+-            ('removable', 1, 'removable'),
+-            ('ro', 1, 'read-only'),
++            ('id_bus', 'usb', 'id_bus'),
++            ('ro', '1', 'read-only'),
+         ]
+         rejected = [reason for (k, v, reason) in reasons if
+                     self.sys_api.get(k, '') == v]
+diff --git a/src/ceph-volume/ceph_volume/util/disk.py b/src/ceph-volume/ceph_volume/util/disk.py
+index a96b0f0a7f84a..dc1d9b1b79205 100644
+--- a/src/ceph-volume/ceph_volume/util/disk.py
++++ b/src/ceph-volume/ceph_volume/util/disk.py
+@@ -779,8 +779,6 @@ def holder_inner_loop():
+             continue
+         type_ = 'disk'
+         holders = os.listdir(os.path.join(_sys_block_path, dev, 'holders'))
+-        if get_file_contents(os.path.join(_sys_block_path, dev, 'removable')) == "1":
+-            continue
+         if holder_inner_loop():
+             continue
+         dm_dir_path = os.path.join(_sys_block_path, dev, 'dm')
+@@ -918,6 +916,10 @@ def get_devices(_sys_block_path='/sys/block', device=''):
+         metadata['path'] = diskname
+         metadata['type'] = block[2]
+ 
++        # some facts from udevadm
++        p = udevadm_property(sysdir)
++        metadata['id_bus'] = p.get('ID_BUS', '')
++
+         device_facts[diskname] = metadata
+     return device_facts
+ 
